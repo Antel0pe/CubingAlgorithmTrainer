@@ -154,9 +154,6 @@ const PLL_CASES: PLLCase[] = [
 // Define the type for solve times
 type SolveTimes = Record<string, number[]>;
 
-// Define the cube face colors
-const CUBE_FACES: CubeFaceColor[] = ['white', 'red', 'blue', 'orange', 'green', 'yellow'];
-
 export function SpeedcubeTimerComponent(): JSX.Element {
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
