@@ -18,9 +18,6 @@ interface PLLCase {
   image: string;
 }
 
-// Define the type for cube face colors
-type CubeFaceColor = 'white' | 'red' | 'blue' | 'orange' | 'green' | 'yellow';
-
 // Define the PLL cases with all necessary properties
 const PLL_CASES: PLLCase[] = [
   {
