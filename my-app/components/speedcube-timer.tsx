@@ -3,12 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+// Removed Collapsible imports as it's no longer needed
 
 // Define the TypeScript interface for a PLL case
 interface PLLCase {
@@ -155,7 +150,6 @@ export function SpeedcubeTimerComponent(): JSX.Element {
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [scramble, setScramble] = useState<string>("");
-  const [isTabOpen, setIsTabOpen] = useState<boolean>(false);
   const [currentPLLCas, setCurrentPLLCas] = useState<PLLCase | null>(null); // To track the current PLL case
   const [solveTimes, setSolveTimes] = useState<SolveTimes>({}); // To store solve times
 
@@ -176,14 +170,10 @@ export function SpeedcubeTimerComponent(): JSX.Element {
 
   // Generate a scramble based on a random PLL case
   const generateScramble = useCallback(() => {
-    // Select a random PLL case
     const randomIndex = Math.floor(Math.random() * PLL_CASES.length);
     const selectedPLLCas = PLL_CASES[randomIndex];
     setCurrentPLLCas(selectedPLLCas);
-
-    // Use only the scramble pattern without additional U moves
     const newScramble = `${selectedPLLCas.scramblePattern}`.trim();
-
     setScramble(newScramble);
   }, []);
 
@@ -271,44 +261,31 @@ export function SpeedcubeTimerComponent(): JSX.Element {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Collapsible
-        open={isTabOpen}
-        onOpenChange={setIsTabOpen}
-        className="fixed left-0 top-0 z-40 h-screen"
-      >
-        <CollapsibleContent className="w-64 bg-card p-6 shadow-lg h-full overflow-y-auto">
-          <h2 className="text-2xl font-bold mb-4">PLL Cases</h2>
-          <ul className="space-y-4">
-            {PLL_CASES.map((pll) => (
-              <li key={pll.name} className="flex flex-col items-center">
-                {/* <img
-                  src={pll.image}
-                  alt={`${pll.name} PLL case`}
-                  className="w-24 h-24 object-contain mb-2"
-                  loading="lazy"
-                /> */}
-                <div className="flex justify-between items-center w-full">
-                  <span className="font-medium">{pll.name}</span>
-                  <span className="text-muted-foreground">
-                    {avgTimes[pll.name] > 0 ? `${avgTimes[pll.name].toFixed(2)}s` : '--'}
-                  </span>
-                </div>
-                <span className="text-sm text-muted-foreground">{pll.description}</span>
-              </li>
-            ))}
-          </ul>
-        </CollapsibleContent>
-        <CollapsibleTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute top-4 -right-12 h-24 w-12"
-          >
-            {isTabOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          </Button>
-        </CollapsibleTrigger>
-      </Collapsible>
+      {/* Permanent Sidebar */}
+      <div className="w-64 bg-card p-6 shadow-lg h-full overflow-y-auto h-screen">
+        <h2 className="text-2xl font-bold mb-4">PLL Cases</h2>
+        <ul className="space-y-4">
+          {PLL_CASES.map((pll) => (
+            <li key={pll.name} className="flex flex-col items-center">
+              {/* <img
+                src={pll.image}
+                alt={`${pll.name} PLL case`}
+                className="w-24 h-24 object-contain mb-2"
+                loading="lazy"
+              /> */}
+              <div className="flex justify-between items-center w-full">
+                <span className="font-medium">{pll.name}</span>
+                <span className="text-muted-foreground">
+                  {avgTimes[pll.name] > 0 ? `${avgTimes[pll.name].toFixed(2)}s` : '--'}
+                </span>
+              </div>
+              <span className="text-sm text-muted-foreground">{pll.description}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
+      {/* Main Content */}
       <div className="flex-grow container mx-auto p-4 flex flex-col items-center">
         <h1 className="text-4xl font-bold mb-8 mt-8">Speedcube Timer</h1>
         <Card className="w-full max-w-3xl">
@@ -353,6 +330,8 @@ export function SpeedcubeTimerComponent(): JSX.Element {
             </CardContent>
           </Card>
         </div>
+
+      
       </div>
     </div>
   );
