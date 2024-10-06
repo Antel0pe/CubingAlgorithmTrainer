@@ -6,157 +6,32 @@ import { Card, CardContent } from "@/components/ui/card";
 // Removed Collapsible imports as it's no longer needed
 
 // Define the TypeScript interface for a PLL case
-interface PLLCase {
+export interface AlgorithmsOfType {
   name: string;
   description: string;
   scramblePattern: string;
   image: string;
 }
 
-// Define the PLL cases with all necessary properties
-const PLL_CASES: PLLCase[] = [
-  {
-    name: "Aa",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "x L2 D2 L' U' L D2 L' U L'",
-    image: "/images/pll/Aa.png",
-  },
-  {
-    name: "Ab",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "x' L2 D2 L U L' D2 L U' L",
-    image: "/images/pll/Ab.png",
-  },
-  {
-    name: "E",
-    description: "Diagonal Corner Swap",
-    scramblePattern: "x' L' U L D' L' U' L D L' U' L D' L' U L D",
-    image: "/images/pll/E.png",
-  },
-  {
-    name: "F",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R",
-    image: "/images/pll/F.png",
-  },
-  {
-    name: "Ga",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R2 U R' U R' U' R U' R2 U' D R' U R D'",
-    image: "/images/pll/Ga.png",
-  },
-  {
-    name: "Gb",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R' U' R U D' R2 U R' U R U' R U' R2 D",
-    image: "/images/pll/Gb.png",
-  },
-  {
-    name: "Gc",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R2 U' R U' R U R' U R2 U D' R U' R' D",
-    image: "/images/pll/Gc.png",
-  },
-  {
-    name: "Gd",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R U R' U' D R2 U' R U' R' U R' U R2 D'",
-    image: "/images/pll/Gd.png",
-  },
-  {
-    name: "Ja",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "x R2 F R F' R U2 r' U r U2",
-    image: "/images/pll/Ja.png",
-  },
-  {
-    name: "Jb",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R U R' F' R U R' U' R' F R2 U' R'",
-    image: "/images/pll/Jb.png",
-  },
-  {
-    name: "Na",
-    description: "Diagonal Corner Swap",
-    scramblePattern: "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'",
-    image: "/images/pll/Na.png",
-  },
-  {
-    name: "Nb",
-    description: "Diagonal Corner Swap",
-    scramblePattern: "R' U R U' R' F' U' F R U R' F R' F' R U' R",
-    image: "/images/pll/Nb.png",
-  },
-  {
-    name: "Ra",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R U' R' U' R U R D R' U' R D' R' U2 R'",
-    image: "/images/pll/Ra.png",
-  },
-  {
-    name: "Rb",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R2 F R U R U' R' F' R U2 R' U2 R",
-    image: "/images/pll/Rb.png",
-  },
-  {
-    name: "T",
-    description: "Adjacent Corner Swap",
-    scramblePattern: "R U R' U' R' F R2 U' R' U' R U R' F'",
-    image: "/images/pll/T.png",
-  },
-  {
-    name: "Ua",
-    description: "Edges Only",
-    scramblePattern: "M2 U M U2 M' U M2",
-    image: "/images/pll/Ua.png",
-  },
-  {
-    name: "Ub",
-    description: "Edges Only",
-    scramblePattern: "M2 U' M U2 M' U' M2",
-    image: "/images/pll/Ub.png",
-  },
-  {
-    name: "V",
-    description: "Diagonal Corner Swap",
-    scramblePattern: "R' U R' U' y R' F' R2 U' R' U R' F R F",
-    image: "/images/pll/V.png",
-  },
-  {
-    name: "Y",
-    description: "Diagonal Corner Swap",
-    scramblePattern: "F R U' R' U' R U R' F' R U R' U' R' F R F'",
-    image: "/images/pll/Y.png",
-  },
-  {
-    name: "H",
-    description: "Edges Only",
-    scramblePattern: "M2 U M2 U2 M2 U M2",
-    image: "/images/pll/H.png",
-  },
-  {
-    name: "Z",
-    description: "Edges Only",
-    scramblePattern: "M' U M2 U M2 U M' U2 M2",
-    image: "/images/pll/Z.png",
-  },
-];
+type Props = {
+  algorithmTypeCases: AlgorithmsOfType[],
+  title: string
+}
 
 // Define the type for solve times
 type SolveTimes = Record<string, number[]>;
 
-export function SpeedcubeTimerComponent(): JSX.Element {
+export function SpeedcubeTimerComponent({ algorithmTypeCases, title } : Props): JSX.Element {
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [scramble, setScramble] = useState<string>("");
-  const [currentPLLCas, setCurrentPLLCas] = useState<PLLCase | null>(null); // To track the current PLL case
+  const [currentCase, setCurrentCase] = useState<AlgorithmsOfType | null>(null); // To track the current PLL case
   const [solveTimes, setSolveTimes] = useState<SolveTimes>({}); // To store solve times
 
   // Compute average times for all PLL cases using useMemo
   const avgTimes: Record<string, number> = useMemo(() => {
     const averages: Record<string, number> = {};
-    PLL_CASES.forEach((pll) => {
+    algorithmTypeCases.forEach((pll) => {
       const times = solveTimes[pll.name] || [];
       if (times.length === 0) {
         averages[pll.name] = 0.00;
@@ -170,9 +45,9 @@ export function SpeedcubeTimerComponent(): JSX.Element {
 
   // Generate a scramble based on a random PLL case
   const generateScramble = useCallback(() => {
-    const randomIndex = Math.floor(Math.random() * PLL_CASES.length);
-    const selectedPLLCas = PLL_CASES[randomIndex];
-    setCurrentPLLCas(selectedPLLCas);
+    const randomIndex = Math.floor(Math.random() * algorithmTypeCases.length);
+    const selectedPLLCas = algorithmTypeCases[randomIndex];
+    setCurrentCase(selectedPLLCas);
     const newScramble = `${selectedPLLCas.scramblePattern}`.trim();
     setScramble(newScramble);
   }, []);
@@ -182,11 +57,11 @@ export function SpeedcubeTimerComponent(): JSX.Element {
     if (isRunning) {
       setIsRunning(false);
       // Save the solve time using functional state update to avoid stale closure
-      if (currentPLLCas) {
+      if (currentCase) {
         const newTime = parseFloat((time / 1000).toFixed(2)); // Convert to seconds with two decimals
         setSolveTimes((prevSolveTimes) => ({
           ...prevSolveTimes,
-          [currentPLLCas.name]: [...(prevSolveTimes[currentPLLCas.name] || []), newTime],
+          [currentCase.name]: [...(prevSolveTimes[currentCase.name] || []), newTime],
         }));
       }
       // Generate a new scramble
@@ -195,7 +70,7 @@ export function SpeedcubeTimerComponent(): JSX.Element {
       setIsRunning(true);
       setTime(0);
     }
-  }, [isRunning, time, currentPLLCas, generateScramble]);
+  }, [isRunning, time, currentCase, generateScramble]);
 
   // Initialize the first scramble and load solve times from localStorage
   useEffect(() => {
@@ -263,9 +138,9 @@ export function SpeedcubeTimerComponent(): JSX.Element {
     <div className="flex min-h-screen bg-background">
       {/* Permanent Sidebar */}
       <div className="w-64 bg-card p-6 shadow-lg h-full overflow-y-auto h-screen">
-        <h2 className="text-2xl font-bold mb-4">PLL Cases</h2>
+        <h2 className="text-2xl font-bold mb-4">{title}</h2>
         <ul className="space-y-4">
-          {PLL_CASES.map((pll) => (
+          {algorithmTypeCases.map((pll) => (
             <li key={pll.name} className="flex flex-col items-center">
               {/* <img
                 src={pll.image}
@@ -314,7 +189,7 @@ export function SpeedcubeTimerComponent(): JSX.Element {
               <h2 className="text-xl font-semibold mb-4 flex items-center">
               </h2>
               <p className="text-lg font-mono break-words">{scramble}</p>
-              {currentPLLCas && (
+              {currentCase && (
                 <>
                   {/* <img
                     src={currentPLLCas.image}
@@ -323,7 +198,7 @@ export function SpeedcubeTimerComponent(): JSX.Element {
                     loading="lazy"
                   /> */}
                   <p className="mt-2 text-sm text-muted-foreground">
-                    <strong>Case:</strong> {currentPLLCas.name} - {currentPLLCas.description}
+                    <strong>Case:</strong> {currentCase.name} - {currentCase.description}
                   </p>
                 </>
               )}
